@@ -3,9 +3,9 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	var that 						= this;
 	
 	/*
-	 * Properties defined in Contribution
+	 * Properties defined in Contribution.xml
 	 */
-	 
+	
 	var data 						= null;
 	var _propSelChar				= "";
 	var _propSingleRootNodeName 	= null;
