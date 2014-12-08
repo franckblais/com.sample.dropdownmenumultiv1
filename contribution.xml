@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdkExtension
+	xmlns="http://www.sap.com/bi/zen/sdk"
+	id="com.sample.dropdownmenumultiv1"
+	title="Multilevel Dropdown menu
+	version="1.0"
+	vendor="BT">
+	<!-- Multi list Drop down Version 1-->
+	<component id="Dpv1" title="Multilevel Dropdown Menu"
+		tooltip="test" icon="res/dp.gif" handlerType="div" databound="true"
+		propertySheetPath="res/additional_properties_sheet/additional_properties_sheet.html">
+		<jsInclude>res/js/dropv1.js</jsInclude>
+		<cssInclude>res/js/dropv1.css</cssInclude>
+
+		<!-- Result set containing the data-->
+		<property type="ResultSet" title="Data" id="data"
+			group="DataBinding">
+		</property>
+		<!-- Selected menu, not used -->
+		<property type="String" title="selChar" id="selChar"
+			visible="false">
+		</property>
+		<!-- Add Single root node instead of all the first child of the hierarchy -->
+		<property type="boolean" 	title="Add a single root node" 	id="addSingleRootNode"></property>
+		<!-- Name of the Single root node-->
+		<property type="String" 	title="Single root node name" 	id="singleRootNodeName"></property>
+		<!-- On Click Event property -->
+		<property type="ScriptText" title="On Click" 				id="onClick" 				group="Events"></property>
+		<!-- Menu that has been selected, "clicked" -->
+		<property type="String" 	title="clicked Element key" 	id="clickedElemKey" 		visible="false"></property>
+		<!-- Base CSS -->
+		<property type="String" 	title="CSS" 					id="css"></property>
+		<!-- Display reset button property-->
+		<property type="String" 	title="Display Reset Button" 	id="resetButton">
+			<possibleValue>No</possibleValue>
+			<possibleValue>Left</possibleValue>
+			<possibleValue>Right</possibleValue></property>
+		<!-- On Reset event property-->
+		<property type="ScriptText" title='onReset' 				id="onReset"				group="Events"></property>
+
+		<initialization>
+			<!-- WIDTH -->
+			<defaultValue property="WIDTH">700</defaultValue>
+			<!-- HEIGHT -->
+			<defaultValue property="HEIGHT">200</defaultValue>
+			<!-- selChar (obsolete) -->
+			<defaultValue property="selChar"></defaultValue>
+			<!-- singleRootNodeName -->
+			<defaultValue property="singleRootNodeName">Root</defaultValue>
+			<!-- addSingleRootNodeName -->
+			<defaultValue property="addSingleRootNodeName">false</defaultValue>
+			<!-- clickedElemKey -->
+			<defaultValue property="clickedElemKey">INITIAL VALUE</defaultValue>
+			<!-- resetButton -->
+			<defaultValue property="resetButton">No</defaultValue>
+		</initialization>
+	</component>
+</sdkExtension>

@@ -1,0 +1,33 @@
+class com.sap.sample.dropdownmulti.Dpv1 extends Component {
+	Boolean getAddSingleRootNode() {*
+		return this.addSingleRootNode;
+	*}
+
+	void setAddSingleRootNode(Boolean value) {*
+		this.addSingleRootNode = value;
+	*}
+	
+	String getSingleRootName() {*
+		return this.singleRootName;
+	*}
+
+	void setSingleRootName(String newName) {*
+		this.singleRootName = newName;
+	*}
+	
+	String getClickedElemKey() {*
+		return this.clickedElemKey;
+	*}
+
+	void setClickedElemKey(String clicked) {*
+		this.clickedElemKey = clicked;
+	*}
+	
+	String getResetButton() {*
+		return this.resetButton;
+	*}
+
+	void setResetButton(String value) {*
+		this.resetButton = value;
+	*}
+}
