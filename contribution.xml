@@ -10,7 +10,6 @@
 		tooltip="test" icon="res/dp.gif" handlerType="div" databound="true"
 		propertySheetPath="res/additional_properties_sheet/additional_properties_sheet.html">
 		<jsInclude>res/js/dropv1.js</jsInclude>
-		<cssInclude>res/js/dropv1.css</cssInclude>
 
 		<!-- Result set containing the data-->
 		<property type="ResultSet" title="Data" id="data"
@@ -27,8 +26,6 @@
 		<property type="ScriptText" title="On Click" 				id="onClick" 				group="Events"></property>
 		<!-- Menu that has been selected, "clicked" -->
 		<property type="String" 	title="clicked Element key" 	id="clickedElemKey" 		visible="false"></property>
-		<!-- Base CSS -->
-		<property type="String" 	title="CSS" 					id="css"></property>
 		<!-- Display reset button property-->
 		<property type="String" 	title="Display Reset Button" 	id="resetButton">
 			<possibleValue>None</possibleValue>

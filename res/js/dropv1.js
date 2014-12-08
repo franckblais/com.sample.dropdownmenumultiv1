@@ -11,7 +11,6 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	var _propSingleRootNodeName 	= null;
 	var _propAddSingleRootNode  	= null;
 	var _propClickedElemKey			= null;
-	var _propCss					= "";
 	var _propResetButton			= "";
 	
 	/*
@@ -45,18 +44,10 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	 * ***********************/
 	this.init = function() {
 		div_id = "#" + this.$()[0].id;
-		
-		this.appendCss();
 	};
 	
 	this.removeEscapeChars = function(stringValue) {
 		return stringValue.replace(/\\/g, "");
-	};
-	
-	this.appendCss = function() {
-		elemStyleJq		= $("<style> " + this.removeEscapeChars(_propCss) + "</style>");
-		
-		$('head').append(elemStyleJq);
 	};
 	
 	this.setRendered= function(value) {
@@ -100,7 +91,7 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		if (!!pSelectedItem) {
 //			Set the selected item (DOM)
 			elemSelected = pSelectedItem;
-			_propClickedElemKey = elemSelected.attributes.getNamedItem("valuekey").nodeValue;
+			_propClickedElemKey = elemSelected.attributes.getNamedItem("valuekey").value;
 			
 //			Transform the selected item to JQuery object
 			var jqElemSelected = jQuery(elemSelected);
