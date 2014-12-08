@@ -1,4 +1,4 @@
-class com.sap.sample.dropdownmulti.Dpv1 extends Component {
+class com.sample.dropdownmenumultiv1.Dpv1 extends Component {
 	Boolean getAddSingleRootNode() {*
 		return this.addSingleRootNode;
 	*}

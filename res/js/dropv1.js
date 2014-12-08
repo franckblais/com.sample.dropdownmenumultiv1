@@ -1,4 +1,4 @@
-sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", function() {
+sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", function() {
 
 	var that 						= this;
 	
@@ -18,9 +18,10 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 	 * Constants
 	 */
 	
-	var c_ResetButton_NODISP 		= "no"
-	var c_ResetButton_LEFT 			= "Left"
-	var c_ResetButton_RIGHT 		= "Right"
+	var c_ResetButton_NODISP 		= "None";
+	var c_ResetButton_LEFT 			= "Left";
+	var c_ResetButton_RIGHT 		= "Right";
+	var c_DebugFlag					= true;
 	
 	/*
 	 * Others
@@ -44,6 +45,8 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 	 * ***********************/
 	this.init = function() {
 		div_id = "#" + this.$()[0].id;
+		
+		this.appendCss();
 	};
 	
 	this.removeEscapeChars = function(stringValue) {
@@ -53,9 +56,7 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 	this.appendCss = function() {
 		elemStyleJq		= $("<style> " + this.removeEscapeChars(_propCss) + "</style>");
 		
-		if (!this.getRender()) {
-			$('head').append(elemStyleJq);
-		}
+		$('head').append(elemStyleJq);
 	};
 	
 	this.setRendered= function(value) {
@@ -67,7 +68,6 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 	}
 	
 	this.afterUpdate = function() {
-		
 		if (!this.getRender()) {
 			this.$().empty();
 			this.updateDisplay();
@@ -83,7 +83,7 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 		$(".selected-menu-parents").removeClass("selected-menu-parents");
 		
 		elemSelected 		= null;
-		elemJqSelParents 	= null;
+		elemJqSelParents 	= [];
 	}
 	
 	this.updateSelection = function(pSelectedItem) {
@@ -112,8 +112,6 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 //			Set the ID of the LI parents to selected
 			$(jqElemSelected).attr("id", "selected-menu-item");
 			
-			//$("a[valuekey='" + _propClickedElemKey + "']").attr("id","");
-			
 //			Get the LI parents in a table
 			elemJqSelParents = jQElemSelectedLI.parents("LI");
 			
@@ -121,81 +119,50 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 //			Stop until finding a parent with the tag NAV
 			elemJqSelParents.each(function() {
 //				Check he has a direct parent with a UL = NAV
+//				if yes, stop the algorithm
 				if ($( this ).parent("UL").parent().prop("tagName") == "NAV") {
 					return false;
 				}
 				
-				
-//				var firstChild = $( this ).children().first();
-//				$(firstChild).attr("id", "selected-menu-parents");
-				
+//				Update all the parents with a CSS class to display the path
+//				to the selected node
 				var allA = $( this ).find("a[firstLink='true']");
 				if (!!allA) {
 					var firstA = jQuery($(allA)[0]);
 					$(firstA).addClass("selected-menu-parents");
 				}
 			});
-				
-//			if (!!elemSelected)
-//				document.getElementsByName(elemSelected.name) [0].id = "";
-//				//elemSelected.parentElement.id 	= "";
-			
-//			document.getElementsByName(source.name) [0].id = "selected-menu-item";
-			//source.parentElement.id 		= "selected-menu-item"
-
-			
-			//console.dir(_propClickedElemKey);
-			
-//			Update the style of the parents
-			
-			
-			
-//			jqElemSelected.parents("LI").id = "selected-menu-parents";
-//			var jQCurParentElem = null;
-//			do {
-//				jQCurParentElem = jqElemSelected.closest("LI");
-//			} while ();
-			
-		} else {
-			//reset the selection
-			elemSelected = null;
-			elemJqSelParents = null;
 		}
 	};
 	
 	function actionOnReset(e) {
-		if (!!elemSelected)
-			//document.getElementsByName(elemSelected.name) [0].id = "";
-			elemSelected.id = "";
+
+//		Clear the current selection internally
+		that.clearSelection();
 		
-		this.clearSelection();
-		elemSelected 		= null;
-		_propClickedElemKey = null;
-		
+//		Fire the different event to call the reset script
 		that.firePropertiesChanged(["clickedElemKey"]);
 		that.fireEvent("onReset");
 	}
 	
-	function actionOnClick(e) {
-		//console.dir("actionOnClick");
-		console.dir(e);
-		
-		var source = e.target;
-		
-		that.updateSelection(source);
+	function actionOnClick(e) {		
+		that.updateSelection(e.target);
 		that.firePropertiesChanged(["clickedElemKey"]);
 		that.fireEvent("onClick");
 	}
-	
+
+	/*
+	 * Method updateDisplay
+	 * 
+	 * Will update all the display and redraw the menu, using UL, LI and A
+	 */
 	this.updateDisplay = function() {
-		var string_tmp = "";
-		
-		//this.$().append($('<p>selChar :' + selChar + '</p>'));
-		
-		console.dir(data);
+
+		this.debugConsoleDir(data, "this.updateDisplay / var data");
 		
 		var rootUL		= null;
 		
+//		Look for the selected dimension
 		for(var i=0;i<data.dimensions.length;i++){
 			var dim = data.dimensions[i];
 			
@@ -204,16 +171,24 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 				//this.$().append($('<p>Found :' + dim.text + '</p>'));
 				//Should parse and display the member as list
 //				
-				var firstParent = true;
 				var curParent 	= null;
 				var curNode     = null;
 				
+//				Create the first node as NAV
 				var rootNav		= document.createElement("NAV");
+//				Set the ID for CSS purpose
+//				Please note that a correct HTML document should only have one occurence of an ID
+//				Therefore, if several dropdown menus are added in the document, the HTML would not be striclty correct.
 				rootNav.id 		= "primary_nav_wrap";
+				
+//				Createt the first UL section
 				rootUL		= document.createElement("UL");
 				
 				rootNav.appendChild(rootUL);
 				
+				/*
+				 * If the user wanted to add a false first root node, we have to add it
+				 */
 				if (_propAddSingleRootNode) {
 					var newLI 	= this.createLIText(_propSingleRootNodeName);
 					var newUL	= document.createElement("UL");
@@ -224,6 +199,7 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 					rootUL = newUL;
 				};
 				
+//				This table if a LIFO pile and will be used to track the parents
 				var trackPile	= [];
 				
 				//keep track of the UL parents all the time
@@ -233,12 +209,15 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 				
 				var curLevel	= 0;
 				var lastLevel	= 0;
-//				
+				
+//				Loop at each member of the hierarchy
 				for(var j=0;j<dim.members.length;j++){
 					var mem = dim.members[j];
 					
+//					Keep track of the last level
 					lastLevel = curLevel;
 					
+//					The first node do not have a level property, therefore = 0
 					if (mem.hasOwnProperty('level')) {
 						curLevel = mem.level;
 					}
@@ -248,7 +227,7 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 					
 					if (curLevel == lastLevel) {
 						// on the same level, add a LI, no pile modification
-						curNode = this.createLI(mem);
+//						Only need to create a new LI, after the IF
 					} else if (curLevel > lastLevel) {
 						//We have gone one level under
 						//should pile, create a LI and a UL inside
@@ -259,7 +238,7 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 						trackPile.push(curParent);
 						
 						curParent 	= newUL;
-						curNode = this.createLI(mem);
+						
 					} else if (curLevel < lastLevel) {
 						//went back some level before
 						//need to depile
@@ -269,21 +248,22 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 							curParent = trackPile.pop();
 							curPop++;
 						} while (curPop < nbPop);
-						
-						curNode = this.createLI(mem);
 					}
+					
+					curNode = this.createLI(mem);
 					curParent.appendChild(curNode);
 				};
 				
 				var jqResButton = null;
 				if (_propResetButton != c_ResetButton_NODISP) {
+//					Create a JQuery element to make it easier to call a onClick method
 					jqResButton = jQuery(this.createLIText("X"));
 					jqResButton.click(actionOnReset);
 				}
 				
-				
-				var rootULJq = jQuery(rootNav.firstChild);
 				if (!!jqResButton) {
+					var rootULJq = jQuery(rootNav.firstChild);
+//					Depending on where the root node should be added, get the first child and Prepand or append
 					switch (_propResetButton) {
 						case c_ResetButton_LEFT:
 							rootULJq.prepend(jqResButton);
@@ -294,7 +274,7 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 					};
 				}
 				
-				//this.$().addContent(tContent);
+//				Append the list to the HTML
 				this.$().append(rootNav);
 			}
 		}
@@ -305,44 +285,41 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 	this.createLI = function(mem) {
 		//mem is a member of a dimension
 		var node 		= document.createElement("LI");
+		node.className = node.className + " submenu";
 		var link		= document.createElement("A");
 		
-		//node.click(actionOnClick);
 		
-		
-		//link.id = div_id + mem.key;
-		//link.setAttribute("HREF", "#");
-		
+//		Keep track of the internal value. Will be retrieved when clicked
 		link.setAttribute("valuekey", mem.key);
+//		Add this attribute to be easily found with JQyery
 		link.setAttribute("firstLink", "true");
-		link.name = div_id + mem.key + "LI";
+//		link.name = div_id + mem.key + "LI";
 		
-		if (mem.key == _propClickedElemKey) {
-			link.id = "selected-menu-item";
-		}
-		
+//		Create a JQyery element to add the onClick event
 		var linkJQ = jQuery(link);
 		linkJQ.click(actionOnClick);
 		
+//		Get back the DOM element
 		link = linkJQ.get()[0];
 		
-		var lvl = 0;
-		
-		if (mem.hasOwnProperty('level')) {
-			lvl = mem.level;
+		var textTmp  = mem.text;
+		var sepIndex = textTmp.indexOf("|");
+		if (sepIndex >= 0) {
+			sepIndex++;
+			textTmp = textTmp.substring(sepIndex, textTmp.length);
 		}
-		var text 		= document.createTextNode(mem.text);
+		var textNode 		= document.createTextNode(textTmp);
 		
-		link.appendChild(text);
+		link.appendChild(textNode);
 		node.appendChild(link);
 		
 		return node;
 	}
+	
 	this.createLIText = function(text) {
 		//mem is a member of a dimension
 		var node 		= document.createElement("LI");
 		var link		= document.createElement("A");
-		
 		
 		//link.id = div_id + text;
 		link.setAttribute("HREF", "#");
@@ -355,17 +332,6 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 		return node;
 	}
 	
-	this.data = function(value) {
-		if (value === undefined) {
-			return data;
-		} else {
-			data = value;
-			return this;
-		}
-		
-		this.setRendered(false);
-	};
-	
 	/*
 	 * Return the content of the dimension tables from an array converted in a JSON String
 	 * - Called in the Property page
@@ -376,6 +342,20 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 		}
 	};
 	
+	
+	/*
+	 * --- GETTER SETTER for DS properties !
+	 */
+	this.data = function(value) {
+		if (value === undefined) {
+			return data;
+		} else {
+			data = value;
+			return this;
+		}
+		
+		this.setRendered(false);
+	};
 	
 	/*
 	 * This is the getter/Setter of selChar.
@@ -450,16 +430,22 @@ sap.designstudio.sdk.Component.subclass("com.sap.sample.dropdownmulti.Dpv1", fun
 		this.setRendered(false);
 	};
 	
-	function findDimensionIndexByName(dimName) {
-		var dimensions = data.dimensions;
-		var dimIndex = -1;
-		for (var i = 0; i < dimensions.length; i++) {
-			var dimNameToCompare = dimensions[i].key;
-			if (dimName == dimNameToCompare) {
-				dimIndex = i;
-				break;
-			};
+	/*
+	 * ---- Utilities Method
+	 */
+	
+	this.debugConsoleDir = function(object, title) {
+		if (c_DebugFlag) {
+			if (title != undefined)
+				console.dir(title);
+			
+			console.dir(object);
 		}
-		return dimIndex;
+	}
+	
+	this.debugAlert = function(text) {
+		if (c_DebugFlag) {
+			alert(text);
+		}
 	}
 });

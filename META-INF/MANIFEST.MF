@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Multilevel Dropdown menu 
+Bundle-Name: Multilevel Dropdown menu
 Bundle-SymbolicName: com.sample.dropdownmenumultiv1;singleton:=true
 Bundle-Version: 1.0
 Require-Bundle: com.sap.ip.bi.zen.rt.components.sdk.eclipse
-Bundle-Vendor: BT
+Bundle-Vendor: BeyondTechnologies

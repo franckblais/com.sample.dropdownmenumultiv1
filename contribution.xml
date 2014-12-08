@@ -2,11 +2,11 @@
 <sdkExtension
 	xmlns="http://www.sap.com/bi/zen/sdk"
 	id="com.sample.dropdownmenumultiv1"
-	title="Multilevel Dropdown menu
+	title="Multilevel Dropdown menu"
 	version="1.0"
-	vendor="BT">
+	vendor="BeyondTechnologies">
 	<!-- Multi list Drop down Version 1-->
-	<component id="Dpv1" title="Multilevel Dropdown Menu"
+	<component id="Dpv1" title="DropDown Multi level (v1)"
 		tooltip="test" icon="res/dp.gif" handlerType="div" databound="true"
 		propertySheetPath="res/additional_properties_sheet/additional_properties_sheet.html">
 		<jsInclude>res/js/dropv1.js</jsInclude>
@@ -17,8 +17,7 @@
 			group="DataBinding">
 		</property>
 		<!-- Selected menu, not used -->
-		<property type="String" title="selChar" id="selChar"
-			visible="false">
+		<property type="String" title="selChar" id="selChar" visible="false">
 		</property>
 		<!-- Add Single root node instead of all the first child of the hierarchy -->
 		<property type="boolean" 	title="Add a single root node" 	id="addSingleRootNode"></property>
@@ -32,7 +31,7 @@
 		<property type="String" 	title="CSS" 					id="css"></property>
 		<!-- Display reset button property-->
 		<property type="String" 	title="Display Reset Button" 	id="resetButton">
-			<possibleValue>No</possibleValue>
+			<possibleValue>None</possibleValue>
 			<possibleValue>Left</possibleValue>
 			<possibleValue>Right</possibleValue></property>
 		<!-- On Reset event property-->
@@ -52,7 +51,7 @@
 			<!-- clickedElemKey -->
 			<defaultValue property="clickedElemKey">INITIAL VALUE</defaultValue>
 			<!-- resetButton -->
-			<defaultValue property="resetButton">No</defaultValue>
+			<defaultValue property="resetButton">None</defaultValue>
 		</initialization>
 	</component>
 </sdkExtension>

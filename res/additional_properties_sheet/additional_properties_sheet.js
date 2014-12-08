@@ -1,4 +1,4 @@
-sap.designstudio.sdk.PropertyPage.subclass("com.sap.sample.dropdownmulti.DropDownMultiV1Prop",  function() {
+sap.designstudio.sdk.PropertyPage.subclass("com.sample.dropdownmenumultiv1.DropDownMultiV1Prop",  function() {
 
 	var that = this;
 	
