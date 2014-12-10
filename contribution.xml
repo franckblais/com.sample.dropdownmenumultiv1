@@ -5,10 +5,15 @@
 	title="Multilevel Dropdown menu"
 	version="1.0"
 	vendor="BeyondTechnologies">
+	
+	<group id="sampleutilities"	title="Design Studio Utilities"	tooltip="Mostly usable, but not supported"/>
 	<!-- Multi list Drop down Version 1-->
 	<component id="Dpv1" title="DropDown Multi level (v1)"
 		tooltip="test" icon="res/dp.gif" handlerType="div" databound="true"
-		propertySheetPath="res/additional_properties_sheet/additional_properties_sheet.html">
+		propertySheetPath="res/additional_properties_sheet/additional_properties_sheet.html"
+		group="sampleutilities" >
+		
+		
 		<jsInclude>res/js/dropv1.js</jsInclude>
 
 		<!-- Result set containing the data-->

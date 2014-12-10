@@ -412,9 +412,11 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		if (value === undefined) {
 			return _propAddSingleRootNode;
 		} else {
+			if (value != _propAddSingleRootNode) {
+				this.setRendered(false);
+				_propAddSingleRootNode = value;
+			}
 			
-			this.setRendered(false);
-			_propAddSingleRootNode = value;
 			return this;
 		}
 	};
@@ -424,8 +426,11 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		if (value === undefined) {
 			return _propSingleRootNodeName;
 		} else {
-			this.setRendered(false);
-			_propSingleRootNodeName = value;
+			if (value != _propSingleRootNodeName) {
+				this.setRendered(false);
+				_propSingleRootNodeName = value;
+			}
+			
 			return this;
 		}
 	};

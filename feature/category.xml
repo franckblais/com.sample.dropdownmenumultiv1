@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/DropDownMultiLevelV1_1.0.0.201412092218.jar" id="DropDownMultiLevelV1" version="1.0.0.201412092218">
+   <feature url="features/DropDownMLV1_1.0.0.qualifier.jar" id="DropDownMLV1" version="1.0.0.qualifier">
       <category name="com.sap.ip.bi.zen.sdk"/>
    </feature>
    <category-def name="com.sap.ip.bi.zen.sdk" label="com.sap.ip.bi.zen.sdk"/>
