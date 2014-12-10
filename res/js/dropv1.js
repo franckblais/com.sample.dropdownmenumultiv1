@@ -11,6 +11,7 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	var _propSingleRootNodeName 	= null;
 	var _propAddSingleRootNode  	= null;
 	var _propClickedElemKey			= null;
+	var _propClickedElemText		= null;
 	var _propResetButton			= "";
 	
 	/*
@@ -26,6 +27,10 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	 * Others
 	 */
 	
+	var dimensionId					= 0;
+	
+	var loaded						= false;
+	
 	//Strings
 	var div_id 						= null;
 	
@@ -34,10 +39,6 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	var elemJqSelParents			= [];
 	var _rendered					= false;
 	var elemStyleJq					= null;
-	
-	//obsolete
-	var meta_data 					= null;
-	var tContent    				= [];
 	
 	/* ***********************
 	 * METHODS				 *
@@ -59,16 +60,20 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	}
 	
 	this.afterUpdate = function() {
+		
 		if (!this.getRender()) {
 			this.$().empty();
 			this.updateDisplay();
 			this.updateSelection(elemSelected);
 			this.setRendered(true);
-		}	
+			
+			loaded = true;
+		}
 	};
 	
 	this.clearSelection = function() {
-		_propClickedElemKey = "";
+		_propClickedElemKey 	= "";
+		_propClickedElemText 	= "";
 		
 		$("#selected-menu-item").attr("id","");
 		$(".selected-menu-parents").removeClass("selected-menu-parents");
@@ -92,6 +97,9 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 //			Set the selected item (DOM)
 			elemSelected = pSelectedItem;
 			_propClickedElemKey = elemSelected.attributes.getNamedItem("valuekey").value;
+			
+//			Must retrieve the text
+			_propClickedElemText = elemSelected.attributes.getNamedItem("valuetext").value;
 			
 //			Transform the selected item to JQuery object
 			var jqElemSelected = jQuery(elemSelected);
@@ -133,12 +141,14 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		
 //		Fire the different event to call the reset script
 		that.firePropertiesChanged(["clickedElemKey"]);
+		that.firePropertiesChanged(["clickedElemText"]);
 		that.fireEvent("onReset");
 	}
 	
 	function actionOnClick(e) {		
 		that.updateSelection(e.target);
 		that.firePropertiesChanged(["clickedElemKey"]);
+		that.firePropertiesChanged(["clickedElemText"]);
 		that.fireEvent("onClick");
 	}
 
@@ -158,6 +168,8 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 			var dim = data.dimensions[i];
 			
 			if (dim.key == _propSelChar) {
+				
+				dimensionId = i;
 				
 				//this.$().append($('<p>Found :' + dim.text + '</p>'));
 				//Should parse and display the member as list
@@ -201,9 +213,15 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 				var curLevel	= 0;
 				var lastLevel	= 0;
 				
+				var subMenu 	= false;
+				
 //				Loop at each member of the hierarchy
 				for(var j=0;j<dim.members.length;j++){
 					var mem = dim.members[j];
+					
+//					Ignore result lines
+					if (mem.type == "RESULT")
+						continue;
 					
 //					Keep track of the last level
 					lastLevel = curLevel;
@@ -241,7 +259,13 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 						} while (curPop < nbPop);
 					}
 					
-					curNode = this.createLI(mem);
+					if (_propAddSingleRootNode) {
+						subMenu = true;
+					} else {
+						subMenu = curLevel>0;
+					}
+					
+					curNode = this.createLI(mem, subMenu);
 					curParent.appendChild(curNode);
 				};
 				
@@ -269,14 +293,15 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 				this.$().append(rootNav);
 			}
 		}
-		
-		this.setRendered(true);
 	}
 	
-	this.createLI = function(mem) {
+	this.createLI = function(mem, activateSubMenu) {
 		//mem is a member of a dimension
 		var node 		= document.createElement("LI");
-		node.className = node.className + " submenu";
+		
+		if (activateSubMenu)
+			node.className = node.className + " submenu";
+		
 		var link		= document.createElement("A");
 		
 		
@@ -300,6 +325,9 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 			textTmp = textTmp.substring(sepIndex, textTmp.length);
 		}
 		var textNode 		= document.createTextNode(textTmp);
+		
+//		Keep track of the internal value. Will be retrieved when clicked
+		link.setAttribute("valuetext", textTmp);
 		
 		link.appendChild(textNode);
 		node.appendChild(link);
@@ -341,11 +369,15 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		if (value === undefined) {
 			return data;
 		} else {
-			data = value;
+			
+			if (!loaded && !!value) {
+				data = value;
+				loaded = true;
+				this.setRendered(false);
+			}
+			
 			return this;
 		}
-		
-		this.setRendered(false);
 	};
 	
 	/*
@@ -359,37 +391,43 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 	 *  - preferably you component (this file)
 	 */
 	
-	this.selChar = function(value) {	
+	this.selChar = function(value) {
+		
 		if (value === undefined) {
 			return _propSelChar;
 		} else {
-			_propSelChar = value;
+			
+			if (_propSelChar != value) {
+				loaded = false;
+				this.setRendered(false);
+				_propSelChar = value;
+			}
+			
 			return this;
 		}
-		
-		this.setRendered(false);
 	};
 	
-	this.addSingleRootNode = function(value) {	
+	this.addSingleRootNode = function(value) {
+		
 		if (value === undefined) {
 			return _propAddSingleRootNode;
 		} else {
+			
+			this.setRendered(false);
 			_propAddSingleRootNode = value;
 			return this;
 		}
-		
-		this.setRendered(false);
 	};
 	
 	this.singleRootNodeName = function(value) {	
+		
 		if (value === undefined) {
 			return _propSingleRootNodeName;
 		} else {
+			this.setRendered(false);
 			_propSingleRootNodeName = value;
 			return this;
 		}
-		
-		this.setRendered(false);
 	};
 	
 	this.clickedElemKey = function(value) {	
@@ -401,14 +439,13 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		}
 	};
 	
-	this.css = function(value) {
+	this.clickedElemText = function(value) {	
 		if (value === undefined) {
-			return _propCss;
+			return _propClickedElemText;
 		} else {
-			_propCss = value;
+			_propClickedElemText = value;
 			return this;
 		}
-		this.setRendered(false);
 	};
 	
 	this.resetButton = function(value) {	
@@ -418,7 +455,6 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 			_propResetButton = value;
 			return this;
 		}
-		this.setRendered(false);
 	};
 	
 	/*

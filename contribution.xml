@@ -13,7 +13,7 @@
 
 		<!-- Result set containing the data-->
 		<property type="ResultSet" title="Data" id="data"
-			group="DataBinding">
+			group="DataBinding" visible="false">
 		</property>
 		<!-- Selected menu, not used -->
 		<property type="String" title="selChar" id="selChar" visible="false">
@@ -25,7 +25,8 @@
 		<!-- On Click Event property -->
 		<property type="ScriptText" title="On Click" 				id="onClick" 				group="Events"></property>
 		<!-- Menu that has been selected, "clicked" -->
-		<property type="String" 	title="clicked Element key" 	id="clickedElemKey" 		visible="false"></property>
+		<property type="String" 	title="clicked Element Key" 	id="clickedElemKey" 		visible="false"></property>
+		<property type="String" 	title="clicked Element Text" 	id="clickedElemText" 		visible="false"></property>
 		<!-- Display reset button property-->
 		<property type="String" 	title="Display Reset Button" 	id="resetButton">
 			<possibleValue>None</possibleValue>

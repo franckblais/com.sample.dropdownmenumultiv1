@@ -7,20 +7,28 @@ class com.sample.dropdownmenumultiv1.Dpv1 extends Component {
 		this.addSingleRootNode = value;
 	*}
 	
+	String getResetButton() {*
+		return this.resetButton;
+	*}
+
+	void setResetButton(String resButtonValue) {*
+		this.resetButton = resButtonValue;
+	*}
+	
 	String getSingleRootName() {*
-		return this.singleRootName;
+		return this.singleRootNodeName;
 	*}
 
 	void setSingleRootName(String newName) {*
-		this.singleRootName = newName;
+		this.singleRootNodeName = newName;
 	*}
 	
 	String getClickedElemKey() {*
 		return this.clickedElemKey;
 	*}
-
-	void setClickedElemKey(String clicked) {*
-		this.clickedElemKey = clicked;
+	
+	String getClickedElemText() {*
+		return this.clickedElemText;
 	*}
 	
 	String getResetButton() {*
