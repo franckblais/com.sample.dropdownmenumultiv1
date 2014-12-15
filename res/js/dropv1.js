@@ -457,7 +457,11 @@ sap.designstudio.sdk.Component.subclass("com.sample.dropdownmenumultiv1.Dpv1", f
 		if (value === undefined) {
 			return _propResetButton;
 		} else {
-			_propResetButton = value;
+			if (value != this.getRender()) {
+				this.setRendered(false);
+				_propResetButton = value;
+			}
+			
 			return this;
 		}
 	};
